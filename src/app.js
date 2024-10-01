@@ -56,7 +56,10 @@ app.get("/update", async (req, res) => {
 
   const data = req.body;
   console.log(data);
-  const users = await User.findByIdAndUpdate(userId, data);
+  const users = await User.findByIdAndUpdate(userId, data, {
+    runValidators: true,
+  });
+
   res.send("user updated");
 });
 connectDB()
