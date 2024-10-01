@@ -1,24 +1,25 @@
 const express = require("express");
-
 const app = express();
-app.get("/user", (req, res) => {
-  res.send("user data sent");
+const { connectDB } = require("./config/database");
+const User = require("./models/user");
+app.use(express.json());
+app.post("/signup", async (req, res) => {
+  const user = new User(req.body);
+  // firstName: "shivay",
+  // lastName: "mine",
+
+  await user.save();
+  res.send("user added");
+  // res.send(req.body);
 });
 
-// app.get("/getUserData", (req, res) => {
-//   throw new Error("jznmn");
-// });
-// app.use("/", (err, req, res, next) => {
-//   if (err) {
-//     res.status(500).send("something went wrong");
-//   }
-// });
-
-app.get("/getUserData", (req, res) => {
-  try {
-    throw new error("jhzsk");
-  } catch (err) {
-    res.status(500).send("some error occur");
-  }
-});
-app.listen(3000);
+connectDB()
+  .then(() => {
+    console.log("database connected successfully..");
+    app.listen(3000, (req, res) => {
+      console.log("server is started");
+    });
+  })
+  .catch((err) => {
+    console.error("database cannot be connected");
+  });
