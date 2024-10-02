@@ -51,16 +51,32 @@ app.get("/delete", async (req, res) => {
   }
 });
 
-app.get("/update", async (req, res) => {
-  const userId = req.body.userId;
+app.get("/update/:userId", async (req, res) => {
+  const userId = req.params?.userId;
 
   const data = req.body;
   console.log(data);
-  const users = await User.findByIdAndUpdate(userId, data, {
-    runValidators: true,
-  });
+  try {
+    const Allowed_Updates = ["about", "gender", "age", "skills"];
 
-  res.send("user updated");
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      Allowed_Updates.includes(k)
+    );
+    if (!isUpdateAllowed) {
+      res.status(400).send("update not allowed");
+    }
+
+    if (data?.skills.length > 10) {
+      throw new Error("skills cannot be more than 10 ");
+    }
+
+    const users = await User.findByIdAndUpdate(userId, data, {
+      runValidators: true,
+    });
+    res.send("user updated");
+  } catch (err) {
+    res.status(400).send("update failed : " + err.message);
+  }
 });
 connectDB()
   .then(() => {
