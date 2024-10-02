@@ -4,13 +4,17 @@ const { connectDB } = require("./config/database");
 const User = require("./models/user");
 app.use(express.json());
 app.post("/signup", async (req, res) => {
-  const user = new User(req.body);
-  // firstName: "shivay",
-  // lastName: "mine",
+  try {
+    const user = new User(req.body);
+    // firstName: "shivay",
+    // lastName: "mine",
 
-  await user.save();
-  res.send("user added");
-  // res.send(req.body);
+    await user.save();
+    res.send("user added");
+    // res.send(req.body);
+  } catch (err) {
+    res.status(400).send("user cannot add :" + err.message);
+  }
 });
 
 app.get("/user", async (req, res) => {
