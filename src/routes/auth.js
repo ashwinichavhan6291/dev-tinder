@@ -1,0 +1,59 @@
+const express = require("express");
+
+const authRouter = express.Router();
+const User = require("../models/user.js");
+const bcrypt = require("bcrypt");
+
+const { validateSignUpData } = require("../utils/validation.js");
+
+authRouter.post("/signup", async (req, res) => {
+  try {
+    validateSignUpData(req);
+
+    const { firstName, lastName, emailId, password } = req.body;
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    // console.log(passwordHash);
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+    });
+
+    await user.save();
+    res.send("user added");
+  } catch (err) {
+    res.status(400).send("user cannot add :" + err.message);
+  }
+});
+
+authRouter.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+
+    const user = await User.findOne({ emailId: emailId });
+
+    if (!user) {
+      throw Error("Invalid credentials");
+    }
+
+    const isPasswordValid = await user.validatePassword(password);
+
+    if (isPasswordValid) {
+      const token = await user.getJWT();
+
+      // console.log(token);
+      res.cookie("token", token, {
+        expires: new Date(Date.now() + 8 * 3600000),
+      });
+      res.send("login successfull");
+    } else {
+      throw Error("Invalid credentials");
+    }
+  } catch (err) {
+    res.status(400).send("ERROR:" + err.message);
+  }
+});
+
+module.exports = authRouter;
