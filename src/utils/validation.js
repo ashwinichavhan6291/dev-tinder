@@ -29,4 +29,16 @@ const validateEditProfileData = (req) => {
   );
   return isEditAllowed;
 };
-module.exports = { validateSignUpData, validateEditProfileData };
+
+const validateForgetPassword = (req) => {
+  const password = req.body.password;
+  if (password && validator.isStrongPassword(password)) {
+    return true;
+  }
+  return false;
+};
+module.exports = {
+  validateSignUpData,
+  validateEditProfileData,
+  validateForgetPassword,
+};
