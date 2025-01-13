@@ -6,7 +6,8 @@ const { userAuth } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
 
-const User_Safe_Data = "firstName lastName skills age gender";
+const User_Safe_Data = "firstName lastName skills age gender about photourl";
+
 userRouter.get("/user/requests/received", userAuth, async (req, res) => {
   try {
     const loggedInuser = req.user;
@@ -14,7 +15,7 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
     const connectionRequest = await ConnectionRequest.find({
       toUserId: loggedInuser._id,
       status: "interested",
-    }).populate("fromUserId", "firstName lastName");
+    }).populate("fromUserId", "firstName lastName photourl about");
     // }).populate("fromUserId", ["firstName", "lastName"]);
     res.json({ message: "data fetch successfully", data: connectionRequest });
   } catch (err) {
@@ -31,8 +32,22 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
         { fromUserId: loggedInuser._id, status: "accepted" },
       ],
     })
-      .populate("fromUserId", ["firstName", "lastName"])
-      .populate("toUserId", ["firstName", "lastName"]);
+      .populate("fromUserId", [
+        "firstName",
+        "lastName",
+        "about",
+        "age",
+        "gender",
+        "photourl",
+      ])
+      .populate("toUserId", [
+        "firstName",
+        "lastName",
+        "about",
+        "age",
+        "gender",
+        "photourl",
+      ]);
 
     const data = connectionRequest.map((row) => {
       if (row.fromUserId._id.toString() === loggedInuser._id.toString()) {
@@ -62,6 +77,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
         { toUserId: loggedInuser._id },
       ],
     }).select("fromUserId toUserId");
+
     // .populate("fromUserId", "firstName")
     // .populate("toUserId", "firstName");
 

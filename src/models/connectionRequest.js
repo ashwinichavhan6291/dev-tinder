@@ -5,16 +5,24 @@ const connectionRequestSchema = new mongoose.Schema(
     fromUserId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user", // link between conncectionRequest schema to user Schema
-      require: true,
+      required: true,
     },
     toUserId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
-      require: true,
+      required: true,
     },
+    // photourl: {
+    //   type: String,
+    //   validate(value) {
+    //     if (!validator.isURL(value)) {
+    //       throw new Error("enter correct URL" + value);
+    //     }
+    //   },
+    // },
     status: {
       type: String,
-      require: true,
+      required: true,
       enum: {
         values: ["ignored", "interested", "accepted", "rejected"],
         message: `{VALUE} is incorrect status type`,

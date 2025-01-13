@@ -24,6 +24,7 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 
+
 app.get("/user", async (req, res) => {
   const userEmail = req.body.emailId;
 
@@ -40,15 +41,15 @@ app.get("/user", async (req, res) => {
   }
 });
 
-app.get("/feed", async (req, res) => {
-  try {
-    const users = await User.find();
+// app.get("/feed", async (req, res) => {
+//   try {
+//     const users = await User.find();
 
-    res.send(users);
-  } catch (err) {
-    res.status(400).send("erorr");
-  }
-});
+//     res.send(users);
+//   } catch (err) {
+//     res.status(400).send("erorr");
+//   }
+// });
 
 app.get("/delete", async (req, res) => {
   const userId = req.body.userId;
@@ -94,7 +95,7 @@ connectDB()
   .then(() => {
     console.log("database connected successfully..");
     app.listen(3000, (req, res) => {
-      console.log("server is started");
+      console.log("server is started 3000");
     });
   })
   .catch((err) => {
