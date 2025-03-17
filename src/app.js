@@ -4,12 +4,11 @@ const app = express();
 const http=require("http");
 const { connectDB } = require("./config/database");
 
-const User = require("./models/user.js");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 app.use(
   cors({
-    origin: "http://localhost:5175",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
@@ -20,11 +19,13 @@ const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/requests");
 const userRouter = require("./routes/user.js");
 const initializeSocket = require("./utils/socket.js");
+const chatRouter = require("./routes/chat.js");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
+app.use("/" , chatRouter);
 
 
 const server=http.createServer(app);
