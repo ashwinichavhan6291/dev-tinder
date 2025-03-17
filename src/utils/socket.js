@@ -11,7 +11,9 @@ const crypto=require("crypto");
     }
     
 })
+
 io.on("connection",(socket)=>{
+  
     socket.on("joinchat",({userId,targetUserId,firstName})=>{
   const roomId=secreateRoomId(userId,targetUserId);
   console.log("rom id" ,roomId);
